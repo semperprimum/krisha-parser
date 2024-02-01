@@ -10,20 +10,30 @@ def parse_krisha(base_url, start_page=1, end_page=None):
     current_id = 1
     current_page = start_page
 
+    headers = {
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8", 
+        # "Accept-Encoding": "gzip, deflate, br, utf-8", 
+        "Accept-Language": "en-US,en;q=0.5", 
+        "Referer": "https://www.google.com/", 
+        "Upgrade-Insecure-Requests": "1", 
+        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:123.0) Gecko/20100101 Firefox/123.0" 
+    }
+
     while end_page is None or current_page <= end_page:
         url = f"{base_url}?page={current_page}"
 
-        print(f"Parsing page: {current_page}")
 
-        delay_seconds = random.uniform(2, 7)
+        delay_seconds = random.uniform(2, 10)
         print(f"Setting a {delay_seconds:.2f} second delay.")
         time.sleep(delay_seconds)
 
-        response = requests.get(url)
+        response = requests.get(url, headers=headers)
 
         if response.status_code == 200:
             soup = BeautifulSoup(response.text, "html.parser")
             property_containers = soup.find_all("div", class_="a-card__inc")
+        
+            print(f"Parsing page: {current_page}")
 
             for property_container in property_containers:
                 price = property_container.find("div", class_="a-card__price").text.strip()
