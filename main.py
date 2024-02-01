@@ -13,6 +13,12 @@ def parse_krisha(base_url, start_page=1, end_page=None):
     while end_page is None or current_page <= end_page:
         url = f"{base_url}?page={current_page}"
 
+        print(f"Parsing page: {current_page}")
+
+        delay_seconds = random.uniform(2, 7)
+        print(f"Setting a {delay_seconds:.2f} second delay.")
+        time.sleep(delay_seconds)
+
         response = requests.get(url)
 
         if response.status_code == 200:
@@ -47,15 +53,11 @@ def parse_krisha(base_url, start_page=1, end_page=None):
 
                 current_id += 1
 
-                print("Parsed page №{current_page}")
-
-                delay_seconds = random.uniform(2, 4)
-                time.sleep(delay_seconds)
-
             current_page += 1
 
         else:
             print(f"Error fetching page {current_page}")
+            break;
 
     with open("krisha_properties.json", "w", encoding="utf-8") as json_file:
         json.dump(properties_list, json_file, ensure_ascii=False, indent=2)
@@ -63,4 +65,4 @@ def parse_krisha(base_url, start_page=1, end_page=None):
         print("Data has been successfully written.")
 
 base_url = "https://krisha.kz/prodazha/kvartiry/astana/"
-parse_krisha(base_url, start_page=1, end_page=5)
+parse_krisha(base_url, start_page=1, end_page=10)
