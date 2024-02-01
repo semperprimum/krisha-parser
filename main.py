@@ -76,4 +76,4 @@ def parse_krisha(base_url, start_page=1, end_page=None):
         print("Data has been successfully written.")
 
 base_url = "https://krisha.kz/prodazha/kvartiry/astana/"
-parse_krisha(base_url, start_page=1, end_page=40)
+parse_krisha(base_url, start_page=1, end_page=100)
