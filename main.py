@@ -5,14 +5,18 @@ import time
 import random
 
 def parse_krisha(base_url, start_page=1, end_page=None):
-    properties_list = []
+    with open("krisha_properties.json", "r", encoding="utf-8") as json_file:
+        existing_data = json.load(json_file)
 
-    current_id = 1
+    if existing_data:
+        current_id = existing_data[-1]["id"] + 1
+    else:
+        current_id = 1
+
     current_page = start_page
 
     headers = {
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8", 
-        # "Accept-Encoding": "gzip, deflate, br", 
         "Accept-Language": "en-US,en;q=0.5", 
         "Referer": "https://www.google.com/", 
         "Upgrade-Insecure-Requests": "1", 
@@ -51,6 +55,10 @@ def parse_krisha(base_url, start_page=1, end_page=None):
                     else:
                         description = "No description"
 
+
+                with open("krisha_properties.json", "r", encoding="utf-8") as json_file:
+                    existing_data = json.load(json_file)
+
                 property_data = {
                     "id": current_id,
                     "price": price,
@@ -60,7 +68,12 @@ def parse_krisha(base_url, start_page=1, end_page=None):
                     "description": description
                 }
 
-                properties_list.append(property_data)
+                existing_data.append(property_data)
+
+                with open("krisha_properties.json", "w", encoding="utf-8") as json_file:
+                    json.dump(existing_data, json_file, ensure_ascii=False, indent=2)
+
+                print(f"Proprty {property_data["id"]} is successfully added.")
 
                 current_id += 1
 
@@ -68,12 +81,9 @@ def parse_krisha(base_url, start_page=1, end_page=None):
 
         else:
             print(f"Error fetching page {current_page}")
-            break;
+            break
 
-    with open("krisha_properties.json", "w", encoding="utf-8") as json_file:
-        json.dump(properties_list, json_file, ensure_ascii=False, indent=2)
-
-        print("Data has been successfully written.")
+    print("Data has been successfully written.")
 
 base_url = "https://krisha.kz/prodazha/kvartiry/astana/"
-parse_krisha(base_url, start_page=1, end_page=100)
+parse_krisha(base_url, start_page=150, end_page=155)
